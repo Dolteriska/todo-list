@@ -1,17 +1,21 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views import generic, View
 
-from todo.forms import TaskCreationForm, TagCreationForm, TaskUpdateForm, TagUpdateForm
+from todo.forms import (TaskCreationForm,
+                        TagCreationForm,
+                        TaskUpdateForm,
+                        TagUpdateForm)
 from todo.models import Tag, Task
 
-def index(request):
-    tasks = Task.objects.all().order_by("status", "-datetime")
 
-    context = {
-        "tasks": tasks,
-    }
-    return render(request, "index.html", context)
+class TaskListView(generic.ListView):
+    model = Task
+    template_name = "index.html"
+    context_object_name = "tasks"
+
+    def get_queryset(self):
+        return Task.objects.all().order_by("status", "-datetime")
 
 
 class TaskCreateView(generic.CreateView):
@@ -59,8 +63,9 @@ class TagCreateView(generic.CreateView):
     success_url = reverse_lazy("todo:tag-list")
 
 
-def toggle_task_status(request, pk):
-    task = get_object_or_404(Task, pk=pk)
-    task.status = not task.status
-    task.save()
-    return redirect("todo:index")
+class TaskToggleStatusView(View):
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        task.status = not task.status
+        task.save()
+        return redirect("todo:index")

@@ -8,14 +8,14 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h2 class="card-title mb-4">Update Task</h2>
+                    <h2 class="card-title mb-4">Update Tag</h2>
 
                     <form method="post" novalidate>
                         {% csrf_token %}
                         {{ form|crispy }}
 
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-success px-4">Update Task</button>
+                            <button type="submit" class="btn btn-success px-4">Update Tag</button>
                             <a href="{% url 'todo:tag-list' %}" class="btn btn-outline-secondary">Cancel</a>
                         </div>
                     </form>
